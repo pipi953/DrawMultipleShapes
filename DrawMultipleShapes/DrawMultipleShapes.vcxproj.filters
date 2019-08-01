@@ -15,16 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
+    <ClCompile Include="DrawMultipleShapes.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DrawMultipleShapes.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <None Include="circleShader.vert">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="circleShader.frag">
+      <Filter>头文件</Filter>
+    </None>
   </ItemGroup>
 </Project>
