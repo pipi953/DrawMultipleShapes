@@ -46,7 +46,6 @@ void initVertexData() {
 	// 闭合点
 	circleVertex[VERTEX_DATA_NUM * 2 + 2] = (float)(radius * cos(radian));
 	circleVertex[VERTEX_DATA_NUM * 2 + 3] = (float)(radius * sin(radian));
-
 }
 
 int main()
