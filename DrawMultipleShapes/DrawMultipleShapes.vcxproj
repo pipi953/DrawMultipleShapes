@@ -163,6 +163,8 @@
   <ItemGroup>
     <None Include="circleShader.frag" />
     <None Include="circleShader.vert" />
+    <None Include="squareShader.frag" />
+    <None Include="squareShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

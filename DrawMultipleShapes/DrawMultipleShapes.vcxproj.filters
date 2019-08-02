@@ -34,5 +34,11 @@
     <None Include="circleShader.frag">
       <Filter>头文件</Filter>
     </None>
+    <None Include="squareShader.vert">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="squareShader.frag">
+      <Filter>头文件</Filter>
+    </None>
   </ItemGroup>
 </Project>
