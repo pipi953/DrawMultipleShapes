@@ -16,7 +16,7 @@
 #include <iostream>
 #include <math.h>
 
-# define M_PI           3.14159265358979323846  /* pi */
+# define M_PI   3.14159265358979323846  /* pi */
 
 //	callback function
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -24,6 +24,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void inputProcess(GLFWwindow *window);
 
+//  加载图片
+GLuint loadTexture(char const* path);
 
 //	window settings
 const unsigned int SCR_WIDTH = 720;
@@ -53,7 +55,7 @@ float* circleVertex = new float[VERTEX_DATA_NUM * 2 + 4];
 // 分成 360 份，每一份的弧度
 float radian = (float)(2 * M_PI / VERTEX_DATA_NUM);
 // 绘制的半径
-float radius = 0.3f;
+float radius = 0.5f;
 
 // 初始化圆形的顶点数据
 void initVertexData() {
@@ -109,36 +111,36 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 
-	///*
-	////	glDepthFunc(GLenum Func) 函数说明
-	//*	通过目标像素与当前像素在 Z方向上值大小 的比较是否满足参数指定的条件，来决定在深度（Z方向）上是否绘制该目标像素。 
-	//*	该函数只有开启 “深度测试” 时才有效
-	//*/
-	//glDepthFunc(GL_LESS);	//	深度测试函数，如果目标像素 z值 < 当前像素 z值， 则绘制目标像素
-	//glEnable(GL_STENCIL_TEST);	//	开启模板测试
-	//
-	////	2. 设置模板函数
-	///*	//	模板函数
-	// *	和深度测试一样，我们也有几个不同控制权，决定何时模板测试通过或失败，以及它将怎样影响模板缓冲，
-	// * 一共有两种函数可供我们去配置模板测试：glStencilFunc() 和 glStencil0p()
-	// */
-	//
-	///*	//	glStencilFunc(GLenum func, GLint ref, GLuint mask):
-	//*	参数含义： 
-	//*	func： 设置模板测试函数，这个测试函数将会应用到已经储存的模板值 和 glStencilFunc的 ref值上
-	//*	ref： 设置了模板测试的参考值，模板缓冲的内容会与这个值对比
-	//* mask： 指定一个遮罩，在模板测试对比引用值和储存的值前，对他们进行按位与(and)操作，初始值为1
-	//*/
-	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);	//	代码含义： 只有参考值 != 模板缓冲区的值&mask时才通过	0xFF: 允许写入缓冲区
-	//
-	////	3. 设置模板测试通过与否的后续执行操作
-	///*	//	void glStencilOp(GLenum sfail, GLenum zfail, GLenum zpass)，
-	//*	参数含义：
-	//*	sfail：当模板测试失败时所执行的操作
-	//*	zfail：当模板测试通过，但深度测试失败时所执行的操作
-	//*	zpass：当模板测试 与 深度测试都通过时执行的操作
-	//*/
-	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	//	GL_KEEP： 保持当前模板缓冲区的值, GL_REPLACE：用 glStencilFunc()函数指定的 ref参考值 替换模板缓区的值
+	/*
+	//	glDepthFunc(GLenum Func) 函数说明
+	*	通过目标像素与当前像素在 Z方向上值大小 的比较是否满足参数指定的条件，来决定在深度（Z方向）上是否绘制该目标像素。 
+	*	该函数只有开启 “深度测试” 时才有效
+	*/
+	glDepthFunc(GL_LESS);	//	深度测试函数，如果目标像素 z值 < 当前像素 z值， 则绘制目标像素
+	glEnable(GL_STENCIL_TEST);	//	开启模板测试
+	
+	//	2. 设置模板函数
+	/*	//	模板函数
+	 *	和深度测试一样，我们也有几个不同控制权，决定何时模板测试通过或失败，以及它将怎样影响模板缓冲，
+	 * 一共有两种函数可供我们去配置模板测试：glStencilFunc() 和 glStencil0p()
+	 */
+	
+	/*	//	glStencilFunc(GLenum func, GLint ref, GLuint mask):
+	*	参数含义： 
+	*	func： 设置模板测试函数，这个测试函数将会应用到已经储存的模板值 和 glStencilFunc的 ref值上
+	*	ref： 设置了模板测试的参考值，模板缓冲的内容会与这个值对比
+	* mask： 指定一个遮罩，在模板测试对比引用值和储存的值前，对他们进行按位与(and)操作，初始值为1
+	*/
+	glStencilFunc(GL_NOTEQUAL, 0, 0xFF);	//	代码含义： 只有参考值 != 模板缓冲区的值&mask时才通过	0xFF: 允许写入缓冲区
+	
+	//	3. 设置模板测试通过与否的后续执行操作
+	/*	//	void glStencilOp(GLenum sfail, GLenum zfail, GLenum zpass)，
+	*	参数含义：
+	*	sfail：当模板测试失败时所执行的操作
+	*	zfail：当模板测试通过，但深度测试失败时所执行的操作
+	*	zpass：当模板测试 与 深度测试都通过时执行的操作
+	*/
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	//	GL_KEEP： 保持当前模板缓冲区的值, GL_REPLACE：用 glStencilFunc()函数指定的 ref参考值 替换模板缓区的值
 	   	  
 
 
@@ -180,48 +182,48 @@ int main()
 		//0.5, 0.5,
 		//-0.5, 0.5
 
-		// positions       
-		-0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
-		 0.5f,  0.5f, -0.5f,
-		 0.5f,  0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
+        // positions          // texture Coords
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-		-0.5f, -0.5f,  0.5f,
-		 0.5f, -0.5f,  0.5f,
-		 0.5f,  0.5f,  0.5f,
-		 0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
-		-0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
-		-0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
-		-0.5f, -0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-		 0.5f,  0.5f,  0.5f,
-		 0.5f,  0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f,  0.5f,
-		 0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-		-0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f,  0.5f,
-		 0.5f, -0.5f,  0.5f,
-		-0.5f, -0.5f,  0.5f,
-		-0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-		-0.5f,  0.5f, -0.5f,
-		 0.5f,  0.5f, -0.5f,
-		 0.5f,  0.5f,  0.5f,
-		 0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 	   
 	unsigned int squareVAO, squareVBO;
@@ -231,14 +233,19 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, squareVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertex), &squareVertex, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-	glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+    unsigned int cubeTexture = loadTexture("Resources/Textures/metal.jpg");
 
-
+    squareShader.use();
+    squareShader.setInt("texture1", 0);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -251,60 +258,73 @@ int main()
 		inputProcess(window);
 
 
-
-		//	render
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);	// 清除颜色缓冲区 深度缓冲区 模板缓冲区
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// 清除颜色缓冲区 深度缓冲区 模板缓冲区
+        /*
+       glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// 清除颜色缓冲区 深度缓冲区 模板缓冲区
 
 		//	----------------------- 传统绘制 -----------------------------------
 
-
-
-		squareShader.use();	//	激活 正方形着色器 (shader)
-
-		//	设置相机参数，并绑定到着色器
+        //	设置相机参数，并绑定到着色器
 		glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		squareShader.setMat4("projection", projection);	//	绑定投影
 		// camera/view transformation
 		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		squareShader.setMat4("view", view);	//	绑定视图
+
 		// render the loaded model
 		glm::mat4 model = glm::mat4(1.0f);
 		//model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
 		//model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		squareShader.setMat4("model", model);
 
-
-
-		circleShader.use();
-		//	画圆
-		glBindVertexArray(circleVAO);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, VERTEX_DATA_NUM * 2 + 4);
-
-		squareShader.use();	//	激活 正方形着色器 (shader)
-		glBindVertexArray(squareVAO);
-		glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVertex) / sizeof(float));
-
-
-		////	------------------------ 使用指定模板缓冲区的绘制 ------------------------------------
-		////	1. 渲染过程，正常绘制对象(黄色方形)，写入模板缓冲区
-		//glStencilFunc(GL_ALWAYS, 1, 0xFF);	//	总是通过模板测试
-
-		//glStencilMask(0xFF);	//	绘制物体时，允许写入模板缓冲区
-		//glBindVertexArray(squareVAO);
-		////circleShader.setInt("tag", 0);
-		//glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVertex) / sizeof(float));
-		//glBindVertexArray(0);
-
-		////	2. 渲染过程，现在将正方形当做窗口绘制，此次禁止模板写入
-		//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);	//	参考值不等于模板缓冲区的值时，允许通过
-
-		//glStencilMask(0x00);	//	绘制物体时，禁止修改深度缓冲区
-		//glDisable(GL_DEPTH_TEST);
-		////circleShader.setInt("tag", 1);
+		//circleShader.use();
+		////	画圆
 		//glBindVertexArray(circleVAO);
 		//glDrawArrays(GL_TRIANGLE_FAN, 0, VERTEX_DATA_NUM * 2 + 4);
+
+		//squareShader.use();	//	激活 正方形着色器 (shader)
+		//glBindVertexArray(squareVAO);
+		//glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVertex) / sizeof(float));
+
+        */
+
+
+        //	render
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);	// 清除颜色缓冲区 深度缓冲区 模板缓冲区
+
+        //	设置相机参数，并绑定到着色器
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        squareShader.setMat4("projection", projection);	//	绑定投影
+        // camera/view transformation
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        squareShader.setMat4("view", view);	//	绑定视图
+       
+
+        //	------------------------ 使用指定模板缓冲区的绘制 ------------------------------------
+        //  1. 渲染 红色圆形图案，并写入模板缓冲区
+        circleShader.use(); //  激活圆形的着色器，并设置参数
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);  //  设置其数据总是通过模板缓冲区，将1首先填充缓冲区
+        glStencilMask(0xFF);    //  绘制物体时，允许实时写入模板缓冲区
+        glBindVertexArray(circleVAO);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, VERTEX_DATA_NUM * 2 + 4);
+        glBindVertexArray(0);
+                                            
+		//	2. 渲染过程，现在对正方形绘制，此次禁止模板写入
+        squareShader.use(); //  激活方形着色器
+        glStencilFunc(GL_NOTEQUAL, 0, 0xFF);	//	参考值不等于模板缓冲区的值时，允许通过
+        glStencilMask(0x00);	//	绘制物体时，禁止修改深度缓冲区
+		glDisable(GL_DEPTH_TEST);
+        
+        float scale = 1;
+        model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(scale, scale, scale));
+        squareShader.setMat4("model", model);
+        glBindVertexArray(squareVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, cubeTexture);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVertex) / sizeof(float));
 
 
 
@@ -313,8 +333,8 @@ int main()
 
 		glBindVertexArray(0);
 		
-		//glStencilMask(0xFF);	//	深度缓冲区 关闭修改
-		//glEnable(GL_DEPTH_TEST);	//	开启深度测试
+		glStencilMask(0xFF);	//	深度缓冲区 关闭修改
+		glEnable(GL_DEPTH_TEST);	//	开启深度测试
 
 
 		glfwSwapBuffers(window);
@@ -399,6 +419,44 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	front.y = sin(glm::radians(pitch));
 	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	cameraFront = glm::normalize(front);
+}
+
+GLuint loadTexture(char const* path) {
+    //	创建纹理并加载
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    //	加载图片，	创建纹理，并生成mipmap
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true);		//	告诉stb_image.h，在y轴上反转加载纹理。
+    unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        GLenum format;
+        if (nrChannels == 1)
+            format = GL_RED;
+        else if (nrChannels == 3)
+            format = GL_RGB;
+        else if (nrChannels == 4)
+            format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        //	设置其他参数
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        //	释放资源
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Texture failed to load at path: " << path << std::endl;
+        stbi_image_free(data);
+    }
+    return textureID;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
