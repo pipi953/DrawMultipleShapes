@@ -257,18 +257,7 @@ int main()
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);	// 清除颜色缓冲区 深度缓冲区 模板缓冲区
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// 清除颜色缓冲区 深度缓冲区 模板缓冲区
 
-		////	----------------------- 传统绘制 -----------------------------------
-
-		circleShader.use();
-		//	画圆
-		glBindVertexArray(circleVAO);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, VERTEX_DATA_NUM * 2 + 4);
-
-
-		//squareShader.use();	
-		////	画正方形
-		//glBindVertexArray(squareVAO);
-		//glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVertex) / sizeof(float));
+		//	----------------------- 传统绘制 -----------------------------------
 
 
 
@@ -286,6 +275,14 @@ int main()
 		//model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		squareShader.setMat4("model", model);
 
+
+
+		circleShader.use();
+		//	画圆
+		glBindVertexArray(circleVAO);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, VERTEX_DATA_NUM * 2 + 4);
+
+		squareShader.use();	//	激活 正方形着色器 (shader)
 		glBindVertexArray(squareVAO);
 		glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVertex) / sizeof(float));
 
@@ -308,7 +305,6 @@ int main()
 		////circleShader.setInt("tag", 1);
 		//glBindVertexArray(circleVAO);
 		//glDrawArrays(GL_TRIANGLE_FAN, 0, VERTEX_DATA_NUM * 2 + 4);
-
 
 
 
