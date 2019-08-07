@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="useTime.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="circleShader.frag" />

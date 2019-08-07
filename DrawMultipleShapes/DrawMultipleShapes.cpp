@@ -43,10 +43,15 @@ float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 float fov = 45.0f;
 
-// 计时器
+// 键盘移动操作的 计时器
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
+//	渲染速度测试的 计时器
+LARGE_INTEGER t1, t2, tc;	//	 计时器声明
+int count = 0;	//	渲染次数
+float useTime = 0;	//	一次绘制的耗时
+float useTimeSum = 0;	//	消耗时间总和
 
 // 圆形分割的数量，分成 360 份，可由 360 个线段组成空心圆，也可以由 360 个三角形组成实心圆
 int VERTEX_DATA_NUM = 360;
@@ -247,6 +252,13 @@ int main()
     squareShader.use();
     squareShader.setInt("texture1", 0);
 
+
+	//	计时
+	FILE *fp;
+	fopen_s(&fp, "useTime.h", "w");
+	fprintf(fp, "float time_30[] = {\n");
+
+
 	while (!glfwWindowShouldClose(window))
 	{
 		//	每帧时间 逻辑
@@ -258,7 +270,15 @@ int main()
 		inputProcess(window);
 
 
-        /*
+		//	测试时间	
+		QueryPerformanceFrequency(&tc);
+		QueryPerformanceCounter(&t1);
+
+
+
+
+
+       /*
        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// 清除颜色缓冲区 深度缓冲区 模板缓冲区
 
@@ -277,14 +297,14 @@ int main()
 		//model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		squareShader.setMat4("model", model);
 
-		//circleShader.use();
-		////	画圆
-		//glBindVertexArray(circleVAO);
-		//glDrawArrays(GL_TRIANGLE_FAN, 0, VERTEX_DATA_NUM * 2 + 4);
+		circleShader.use();
+		//	画圆
+		glBindVertexArray(circleVAO);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, VERTEX_DATA_NUM * 2 + 4);
 
-		//squareShader.use();	//	激活 正方形着色器 (shader)
-		//glBindVertexArray(squareVAO);
-		//glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVertex) / sizeof(float));
+		squareShader.use();	//	激活 正方形着色器 (shader)
+		glBindVertexArray(squareVAO);
+		glDrawArrays(GL_TRIANGLES, 0, sizeof(squareVertex) / sizeof(float));
 
         */
 
@@ -301,8 +321,10 @@ int main()
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         squareShader.setMat4("view", view);	//	绑定视图
        
-
-        //	------------------------ 使用指定模板缓冲区的绘制 ------------------------------------
+		//	关闭线框模式（绘制圆孔）
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		
+		//	------------------------ 使用指定模板缓冲区的绘制 ------------------------------------
         //  1. 渲染 红色圆形图案，并写入模板缓冲区
         circleShader.use(); //  激活圆形的着色器，并设置参数
         glStencilFunc(GL_ALWAYS, 1, 0xFF);  //  设置其数据总是通过模板缓冲区，将1首先填充缓冲区
@@ -311,6 +333,9 @@ int main()
         glDrawArrays(GL_TRIANGLE_FAN, 0, VERTEX_DATA_NUM * 2 + 4);
         glBindVertexArray(0);
                                             
+		//	开启线框模式（绘制正方体）
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 		//	2. 渲染过程，现在对正方形绘制，此次禁止模板写入
         squareShader.use(); //  激活方形着色器
         glStencilFunc(GL_NOTEQUAL, 0, 0xFF);	//	参考值不等于模板缓冲区的值时，允许通过
@@ -336,8 +361,29 @@ int main()
 		glStencilMask(0xFF);	//	深度缓冲区 关闭修改
 		glEnable(GL_DEPTH_TEST);	//	开启深度测试
 
+		//	测定渲染时间 -- 计时器
+		printf("~~~~~~~~ count = %d\n", count);
+		QueryPerformanceCounter(&t2);
+		if (count >= 100 && count < 200)
+		{
+		    useTime = (t2.QuadPart - t1.QuadPart)*1.0 / tc.QuadPart;
+		    useTimeSum += useTime;
+		    if (count != 100 && count % 5 == 0)
+		        fprintf(fp, "\n");
+		    fprintf(fp, "%f,  ", useTime);
+		    if (count == 199) {
+		        fprintf(fp, "\n};\n\n");
+		        fprintf(fp, "float useTimeSum = %f, AveTime = %f;", useTimeSum, useTimeSum / 100);
+		        fclose(fp);
+		    }
+		}
+
 
 		glfwSwapBuffers(window);
+
+		//	渲染计数器
+		count++;
+
 		glfwPollEvents();
 	}
 
