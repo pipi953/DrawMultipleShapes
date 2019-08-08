@@ -72,8 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Graphics\glm-0.9.8;C:\Graphics\glfw-3.2.1\x86\include;C:\Graphics\glad\include;C:\Graphics;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Graphics\glfw-3.2.1\x86\Libs\Debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Graphics\assimp-4.0.1\x86\include;C:\Graphics\glm-0.9.8;C:\Graphics\glfw-3.2.1\x86\include;C:\Graphics\glad\include;C:\Graphics;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Graphics\assimp-4.0.1\x86\Debug;C:\Graphics\glfw-3.2.1\x86\Libs\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -97,7 +97,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc140-mt.lib;opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -158,6 +158,7 @@
     <ClCompile Include="glad.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ModelData.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="useTime.h" />
   </ItemGroup>
