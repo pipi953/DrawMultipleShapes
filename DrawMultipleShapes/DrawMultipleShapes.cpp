@@ -25,8 +25,8 @@
 # define M_PI   3.14159265358979323846  /* pi */
 
 //	使用宏定义 决定使用传统渲染 或 模板缓冲区渲染
-//#define USE_STENCIL_BUFFER
-#define NOT_USE_STENCIL_BUFFER
+#define USE_STENCIL_BUFFER
+//#define NOT_USE_STENCIL_BUFFER
  
 //	callback function
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
